@@ -1,0 +1,5 @@
+pymupdf
+edge_tts
+streamlit
+openai
+asyncio
