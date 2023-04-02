@@ -14,7 +14,7 @@ def main():
     st.title("Text to Speech")
     text_file=st.file_uploader("Upload a text file", type=["txt"])
     if text_file is not None:
-        text=text_file.read().encode("utf-8").decode("utf-8")
+        text=text_file.read().decode("utf-8")
         OUTPUT_FILE = text_file.name.split(".")[0]+".mp3"
     # gender=st.selectbox("Voice Gender",["Male","Female"])
     # if gender

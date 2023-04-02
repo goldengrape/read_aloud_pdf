@@ -14,7 +14,8 @@ def main():
     end_page=col2.number_input("End Page", value=1, min_value=1, max_value=1000)
     convert_button=st.button("Convert to Text")
 
-    openai.api_key = open_ai_api_key or os.environ['OPENAI_API_KEY']
+    if open_ai_api_key:
+        openai.api_key = open_ai_api_key or os.environ['OPENAI_API_KEY']
     if pdf_file is not None:
         pdf_file_name = tempfile.NamedTemporaryFile(delete=False)
         with open(pdf_file_name.name, "wb") as f:
