@@ -1,7 +1,7 @@
 import sys
 import fitz  # PyMuPDF库
 from typing import List
-from utils import query_gpt
+from utils import query_gpt, remove_pdf_line_breaks
 import openai
 import os 
 import re 
@@ -32,13 +32,13 @@ def remove_footnotes(text: str) -> str:
     cleaned_text = re.sub(footnote_pattern, "", text)
     return cleaned_text
 
-def remove_hyphens(text: str) -> str:
+def remove_hyphens(text: str, inline=True) -> str:
     # 匹配换行时的连字符
-    hyphen_pattern = r"-\n\s*"
+    hyphen_pattern = r"-\s*" if inline else r"-\n\s*"
     cleaned_text = re.sub(hyphen_pattern, "", text)
     return cleaned_text
 
-def clean_text(text: str) -> str:
+def clean_text(text: str, use_GPT=False) -> str:
     prompt='''
     The following text is from a page of a PDF.
     It may contain hard line break and line break connectors. 
@@ -124,9 +124,16 @@ lens is referred to as the edge contour. It is difﬁcult to quantify, so
 
     # input_text=prompt+sample_text+f"\nHere are the text to be convert:\n---{text}\n---"
     input_text=prompt+f"\nHere are the text to be convert:\n---{text}\n---"
-    cleaned_text = query_gpt(input_text)
-    cleaned_text=remove_footnotes(cleaned_text)
-    cleaned_text=remove_hyphens(cleaned_text)
+    if use_GPT:
+        cleaned_text = query_gpt(input_text)
+        cleaned_text = remove_hyphens(cleaned_text, inline=False)
+        cleaned_text = remove_footnotes(cleaned_text)
+    else:
+        cleaned_text = text
+        cleaned_text = remove_pdf_line_breaks(cleaned_text)
+        cleaned_text = remove_hyphens(cleaned_text)
+        cleaned_text = remove_footnotes(cleaned_text)
+    
     return cleaned_text
 
 
@@ -137,9 +144,9 @@ def save_to_txt(text: str, output_file: str) -> None:
         f.write(text)
 
 
-def main(pdf_file: str, start_page: int, end_page: int, output_file: str) -> None:
+def main(pdf_file: str, start_page: int, end_page: int, output_file: str, use_GPT=False) -> None:
     raw_pages = read_pdf_pages(pdf_file, start_page, end_page)
-    cleaned_pages = [clean_text(page) for page in raw_pages]
+    cleaned_pages = [clean_text(page,use_GPT=use_GPT) for page in raw_pages]
     final_text = "\n".join(cleaned_pages)
     final_raw_text = "\n".join(raw_pages)
     # save_to_txt(final_raw_text, "test_pdf/test_raw.txt")
@@ -153,8 +160,8 @@ if __name__ == "__main__":
     # output_file = sys.argv[4]
     openai.api_key=os.environ['OPENAI_API_KEY']
     pdf_file="test_pdf/2022_BCSC_Glaucoma.pdf"
-    start_page=32
-    end_page=34
+    start_page=45
+    end_page=46
     output_file="test_pdf/test.txt"
 
     main(pdf_file, start_page, end_page, output_file)
