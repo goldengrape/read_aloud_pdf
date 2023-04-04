@@ -1,6 +1,7 @@
 # data
 test_pdf/
 *.mp3
+*.mp4
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
