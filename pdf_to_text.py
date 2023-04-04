@@ -161,7 +161,7 @@ if __name__ == "__main__":
     openai.api_key=os.environ['OPENAI_API_KEY']
     pdf_file="test_pdf/test2.pdf"
     start_page=2
-    end_page=3
+    end_page=2
     output_file="test_pdf/test.txt"
 
     main(pdf_file, start_page, end_page, output_file)

@@ -155,11 +155,12 @@ def merge_time_location(time_location_list):
 def get_time_location(pdf_file_path,
                       sub_file_path,
                       start_page,
-                      end_page):
+                      end_page,
+                      n=2):
     htmls=convert_PDF_page_to_html(pdf_file_path, start_page, end_page)
     sub_data = read_sub_file(sub_file_path)
     result=merge_time_location(
-    find_phrases_in_pages(htmls, sub_data, 2))
+    find_phrases_in_pages(htmls, sub_data,n ))
     return result
 
 
