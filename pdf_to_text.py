@@ -159,9 +159,9 @@ if __name__ == "__main__":
     # end_page = int(sys.argv[3])
     # output_file = sys.argv[4]
     openai.api_key=os.environ['OPENAI_API_KEY']
-    pdf_file="test_pdf/2022_BCSC_Glaucoma.pdf"
-    start_page=45
-    end_page=46
+    pdf_file="test_pdf/test2.pdf"
+    start_page=2
+    end_page=3
     output_file="test_pdf/test.txt"
 
     main(pdf_file, start_page, end_page, output_file)
